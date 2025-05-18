@@ -52,3 +52,12 @@ exports.updateExpiration = async (code, newExpirationDate) => {
   ]);
   return rows[0];
 };
+
+exports.updateClicks = async (code) => {
+  const [result] = await db.execute(
+    "UPDATE urls SET clicks = clicks + 1 WHERE urlCode = ?",
+    [code]
+  );
+
+  return result.affectedRows > 0;
+};

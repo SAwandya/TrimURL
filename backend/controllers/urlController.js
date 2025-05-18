@@ -122,3 +122,33 @@ exports.extendUrlExpiration = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.redirectToUrl = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    const url = await urlService.findUrlByCode(code);
+
+    if (!url) {
+      return res.status(404).json({
+        success: false,
+        message: "URL not found",
+      });
+    }
+
+    // Check if URL has expired
+    if (new Date() > new Date(url.expiresAt)) {
+      return res.status(410).json({
+        success: false,
+        message: "URL has expired",
+      });
+    }
+
+    // Increment click count
+    await urlService.incrementClicks(code);
+
+    // Redirect to the original URL
+    return res.redirect(url.originalUrl);
+  } catch (error) {
+    next(error);
+  }
+};

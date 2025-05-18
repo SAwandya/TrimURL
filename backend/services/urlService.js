@@ -51,3 +51,7 @@ exports.extendExpiration = async (code, additionalTime) => {
 
   return await urlModel.updateExpiration(code, newExpiration);
 };
+
+exports.incrementClicks = async (code) => {
+  return await urlModel.updateClicks(code);
+};

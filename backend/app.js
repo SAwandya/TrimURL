@@ -12,8 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1", urlRoutes);
 
-// // Redirect route for shortened URLs
-// app.get("/:code", require("./controllers/url.controller").redirectToUrl);
+// Redirect route for shortened URLs
+app.get("/:code", require("./controllers/urlController").redirectToUrl);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
