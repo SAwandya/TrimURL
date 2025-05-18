@@ -1,57 +1,57 @@
-import React, { useState } from 'react';
-import { 
-  Box, 
-  TextField, 
-  Button, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Grid, 
-  InputAdornment, 
+import React, { useState } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  InputAdornment,
   CircularProgress,
   FormControl,
   FormHelperText,
   MenuItem,
   Select,
-  SelectChangeEvent
-} from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { useUrlStore } from '../store/urlStore';
-import { CreateURLRequest } from '../types';
+  type SelectChangeEvent,
+} from "@mui/material";
+import LinkIcon from "@mui/icons-material/Link";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { useUrlStore } from "../store/urlStore";
+import type { CreateURLRequest } from "../types";
 
 const URLForm: React.FC = () => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const [expiration, setExpiration] = useState<number>(24);
-  const [urlError, setUrlError] = useState('');
-  
+  const [urlError, setUrlError] = useState("");
+
   const { createUrl, loading, lastCreatedUrl } = useUrlStore();
 
   const validateUrl = (value: string): boolean => {
     try {
       new URL(value);
-      setUrlError('');
+      setUrlError("");
       return true;
     } catch (err) {
-      setUrlError('Please enter a valid URL including http:// or https://');
+      setUrlError("Please enter a valid URL including http:// or https://");
       return false;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateUrl(url)) {
       return;
     }
-    
+
     const data: CreateURLRequest = {
       originalUrl: url,
-      expiresIn: expiration
+      expiresIn: expiration,
     };
-    
+
     await createUrl(data);
-    setUrl('');
+    setUrl("");
   };
 
   const handleExpirationChange = (e: SelectChangeEvent<number>) => {
@@ -64,7 +64,7 @@ const URLForm: React.FC = () => {
         <Typography variant="h6" component="h2" gutterBottom>
           Shorten a URL
         </Typography>
-        
+
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -88,7 +88,7 @@ const URLForm: React.FC = () => {
                 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={3}>
               <FormControl fullWidth margin="normal">
                 <Select
@@ -101,17 +101,22 @@ const URLForm: React.FC = () => {
                     </InputAdornment>
                   }
                 >
-                  <MenuItem value={1}>1 hour</MenuItem>
-                  <MenuItem value={24}>24 hours</MenuItem>
-                  <MenuItem value={72}>3 days</MenuItem>
-                  <MenuItem value={168}>7 days</MenuItem>
-                  <MenuItem value={720}>30 days</MenuItem>
+                  <MenuItem value={3600000}>1 hour</MenuItem>
+                  <MenuItem value={86400000}>24 hours</MenuItem>
+                  <MenuItem value={259200000}>3 days</MenuItem>
+                  <MenuItem value={604800000}>7 days</MenuItem>
+                  <MenuItem value={2592000000}>30 days</MenuItem>
                 </Select>
                 <FormHelperText>URL expiration time</FormHelperText>
               </FormControl>
             </Grid>
-            
-            <Grid item xs={12} md={3} sx={{ display: 'flex', alignItems: 'center' }}>
+
+            <Grid
+              item
+              xs={12}
+              md={3}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               <Button
                 type="submit"
                 variant="contained"
@@ -126,21 +131,29 @@ const URLForm: React.FC = () => {
             </Grid>
           </Grid>
         </Box>
-        
+
         {lastCreatedUrl && (
-          <Box sx={{ mt: 3, p: 2, bgcolor: 'primary.light', borderRadius: 1, color: 'white' }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+          <Box
+            sx={{
+              mt: 3,
+              p: 2,
+              bgcolor: "primary.light",
+              borderRadius: 1,
+              color: "white",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
               Your shortened URL:
             </Typography>
-            <Typography 
-              component="a" 
-              href={lastCreatedUrl.shortUrl} 
+            <Typography
+              component="a"
+              href={lastCreatedUrl.shortUrl}
               target="_blank"
-              sx={{ 
-                color: 'white', 
-                textDecoration: 'none',
-                wordBreak: 'break-all',
-                '&:hover': { textDecoration: 'underline' }
+              sx={{
+                color: "white",
+                textDecoration: "none",
+                wordBreak: "break-all",
+                "&:hover": { textDecoration: "underline" },
               }}
             >
               {lastCreatedUrl.shortUrl}

@@ -5,7 +5,7 @@ import {
   Typography,
   Container,
   useMediaQuery,
-  Theme,
+  type Theme,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 
