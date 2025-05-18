@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
   Button,
-  Card,
-  CardContent,
   Typography,
-  Grid,
   InputAdornment,
   CircularProgress,
   FormControl,
@@ -14,19 +11,35 @@ import {
   MenuItem,
   Select,
   type SelectChangeEvent,
+  Modal,
+  Paper,
+  IconButton,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CloseIcon from "@mui/icons-material/Close";
 import { useUrlStore } from "../store/urlStore";
 import type { CreateURLRequest } from "../types";
 import { TIME_OPTIONS, TIME_CONSTANTS } from "../constants/time";
 
-const URLForm: React.FC = () => {
+interface URLFormProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
   const [url, setUrl] = useState("");
   const [expiration, setExpiration] = useState<number>(TIME_CONSTANTS.ONE_DAY);
   const [urlError, setUrlError] = useState("");
 
-  const { createUrl, loading, lastCreatedUrl } = useUrlStore();
+  const { createUrl, loading, success, resetSuccess } = useUrlStore(); // Added success and resetSuccess
+
+  useEffect(() => {
+    if (success) {
+      onClose();
+      resetSuccess();
+    }
+  }, [success, onClose, resetSuccess]);
 
   const validateUrl = (value: string): boolean => {
     try {
@@ -52,117 +65,125 @@ const URLForm: React.FC = () => {
     };
 
     await createUrl(data);
-    setUrl("");
   };
 
   const handleExpirationChange = (e: SelectChangeEvent<number>) => {
     setExpiration(e.target.value as number);
   };
 
+  useEffect(() => {
+    if (open) {
+      setUrl("");
+      setExpiration(TIME_CONSTANTS.ONE_DAY);
+      setUrlError("");
+    }
+  }, [open]);
+
   return (
-    <Card sx={{ mb: 4 }}>
-      <CardContent>
-        <Typography variant="h6" component="h2" gutterBottom>
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="shorten-url-modal-title"
+      aria-describedby="shorten-url-modal-description"
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <Paper
+        sx={{
+          p: 4,
+          width: "100%",
+          maxWidth: "500px",
+          borderRadius: 2,
+          position: "relative",
+          outline: "none",
+        }} // Adjusted maxWidth slightly
+      >
+        <IconButton
+          aria-label="close modal"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 16,
+            top: 16,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography
+          variant="h6"
+          component="h2"
+          gutterBottom
+          id="shorten-url-modal-title"
+        >
           Shorten a URL
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                id="url"
-                label="Enter a long URL"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                margin="normal"
-                variant="outlined"
-                required
-                error={!!urlError}
-                helperText={urlError}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LinkIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={3}>
-              <FormControl fullWidth margin="normal">
-                <Select
-                  value={expiration}
-                  onChange={handleExpirationChange}
-                  displayEmpty
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <AccessTimeIcon />
-                    </InputAdornment>
-                  }
-                >
-                  {TIME_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>URL expiration time</FormHelperText>
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              xs={12}
-              md={3}
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                size="large"
-                disabled={loading || !url}
-                sx={{ mt: { xs: 0, md: 2 }, height: 56 }}
-              >
-                {loading ? <CircularProgress size={24} /> : "Shorten URL"}
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-
-        {lastCreatedUrl && (
-          <Box
-            sx={{
-              mt: 3,
-              p: 2,
-              bgcolor: "primary.light",
-              borderRadius: 1,
-              color: "white",
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+          <TextField
+            fullWidth
+            id="url"
+            label="Enter a long URL"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            margin="normal"
+            variant="outlined"
+            required
+            error={!!urlError}
+            helperText={urlError}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LinkIcon />
+                </InputAdornment>
+              ),
             }}
-          >
-            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-              Your shortened URL:
-            </Typography>
-            <Typography
-              component="a"
-              href={lastCreatedUrl.shortUrl}
-              target="_blank"
-              sx={{
-                color: "white",
-                textDecoration: "none",
-                wordBreak: "break-all",
-                "&:hover": { textDecoration: "underline" },
-              }}
+            sx={{ mb: 2 }}
+          />
+
+          <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
+            <Select
+              value={expiration}
+              onChange={handleExpirationChange}
+              displayEmpty
+              startAdornment={
+                <InputAdornment position="start">
+                  <AccessTimeIcon />
+                </InputAdornment>
+              }
+              inputProps={{ "aria-label": "Expiration Time" }}
             >
-              {lastCreatedUrl.shortUrl}
-            </Typography>
+              {TIME_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>Set expiration time</FormHelperText>
+          </FormControl>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            {" "}
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+              sx={{ mr: 2, py: 1.25, px: 3 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              sx={{ py: 1.25, px: 3 }} // Adjusted padding
+            >
+              {loading ? <CircularProgress size={24} /> : "Shorten URL"}
+            </Button>
           </Box>
-        )}
-      </CardContent>
-    </Card>
+        </Box>
+      </Paper>
+    </Modal>
   );
 };
 
