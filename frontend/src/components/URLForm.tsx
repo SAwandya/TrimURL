@@ -19,10 +19,11 @@ import LinkIcon from "@mui/icons-material/Link";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useUrlStore } from "../store/urlStore";
 import type { CreateURLRequest } from "../types";
+import { TIME_OPTIONS, TIME_CONSTANTS } from "../constants/time";
 
 const URLForm: React.FC = () => {
   const [url, setUrl] = useState("");
-  const [expiration, setExpiration] = useState<number>(24);
+  const [expiration, setExpiration] = useState<number>(TIME_CONSTANTS.ONE_DAY);
   const [urlError, setUrlError] = useState("");
 
   const { createUrl, loading, lastCreatedUrl } = useUrlStore();
@@ -101,11 +102,11 @@ const URLForm: React.FC = () => {
                     </InputAdornment>
                   }
                 >
-                  <MenuItem value={3600000}>1 hour</MenuItem>
-                  <MenuItem value={86400000}>24 hours</MenuItem>
-                  <MenuItem value={259200000}>3 days</MenuItem>
-                  <MenuItem value={604800000}>7 days</MenuItem>
-                  <MenuItem value={2592000000}>30 days</MenuItem>
+                  {TIME_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <FormHelperText>URL expiration time</FormHelperText>
               </FormControl>
