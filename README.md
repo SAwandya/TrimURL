@@ -1,16 +1,3 @@
-Collecting workspace information# URL Shortener Project
-
-This project is a full-stack URL shortener application built with modern web technologies, allowing users to create, manage, and track shortened URLs.
-
-
-### Frontend
-
-Contains all client-side code with React components, services, and state management.
-
-
-### Backend
-
-Houses the server-side code with Express routes, controllers, and database models.
 
 ## Getting Started
 
