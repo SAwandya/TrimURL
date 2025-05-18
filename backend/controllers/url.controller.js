@@ -25,3 +25,32 @@ exports.shortenUrl = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getUrlByCode = async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    const url = await urlService.findUrlByCode(code);
+
+    if (!url) {
+      return res.status(404).json({
+        success: false,
+        message: "URL not found",
+      });
+    }
+
+    // Check if URL has expired
+    if (new Date() > new Date(url.expiresAt)) {
+      return res.status(410).json({
+        success: false,
+        message: "URL has expired",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: url,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -25,3 +25,7 @@ exports.createShortUrl = async (originalUrl, expiresIn) => {
 
   return newUrl;
 };
+
+exports.findUrlByCode = async (code) => {
+  return await urlModel.findByCode(code);
+};

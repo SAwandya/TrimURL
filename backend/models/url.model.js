@@ -17,3 +17,10 @@ exports.create = async (urlData) => {
   ]);
   return rows[0];
 };
+
+exports.findByCode = async (code) => {
+  const [rows] = await db.execute("SELECT * FROM urls WHERE urlCode = ?", [
+    code,
+  ]);
+  return rows[0];
+};
