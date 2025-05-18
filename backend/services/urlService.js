@@ -10,7 +10,7 @@ exports.createShortUrl = async (originalUrl, expiresIn) => {
 
   // Create base URL from environment or default
   const baseUrl =
-    process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+    process.env.BASE_URL;
 
   // Construct short URL
   const shortUrl = `${baseUrl}/${urlCode}`;
