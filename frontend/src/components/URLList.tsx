@@ -1,14 +1,36 @@
-import React, { useEffect } from "react";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Alert,
+  Pagination,
+} from "@mui/material";
 import { useUrlStore } from "../store/urlStore";
 import URLListItem from "./URLListItem";
 
+const ITEMS_PER_PAGE = 5;
+
 const URLList: React.FC = () => {
   const { urls, loading, error, fetchUrls } = useUrlStore();
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchUrls();
   }, [fetchUrls]);
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setCurrentPage(value);
+  };
+
+  const count = Math.ceil(urls.length / ITEMS_PER_PAGE);
+  const paginatedUrls = urls.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   if (loading && urls.length === 0) {
     return (
@@ -38,13 +60,31 @@ const URLList: React.FC = () => {
 
   return (
     <Box>
-      <Typography variant="h6" component="h2" gutterBottom>
+      <Typography
+        variant="h6"
+        component="h2"
+        gutterBottom
+        sx={{ mt: { xs: 2, sm: 0 } }}
+      >
         Your Shortened URLs
       </Typography>
 
-      {urls.map((url) => (
+      {paginatedUrls.map((url) => (
         <URLListItem key={url.id} url={url} />
       ))}
+
+      {count > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3, mb: 2 }}>
+          <Pagination
+            count={count}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            showFirstButton
+            showLastButton
+          />
+        </Box>
+      )}
     </Box>
   );
 };

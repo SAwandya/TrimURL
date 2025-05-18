@@ -85,25 +85,30 @@ const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
       onClose={onClose}
       aria-labelledby="shorten-url-modal-title"
       aria-describedby="shorten-url-modal-description"
-      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        px: { xs: 1, sm: 2 },
+      }} 
     >
       <Paper
         sx={{
-          p: 4,
+          p: { xs: 2, sm: 3, md: 4 }, // Responsive padding for Paper
           width: "100%",
           maxWidth: "500px",
           borderRadius: 2,
           position: "relative",
           outline: "none",
-        }} // Adjusted maxWidth slightly
+        }}
       >
         <IconButton
           aria-label="close modal"
           onClick={onClose}
           sx={{
             position: "absolute",
-            right: 16,
-            top: 16,
+            right: { xs: 8, sm: 12, md: 16 }, // Responsive positioning
+            top: { xs: 8, sm: 12, md: 16 }, // Responsive positioning
             color: (theme) => theme.palette.grey[500],
           }}
         >
@@ -118,11 +123,16 @@ const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
           Shorten a URL
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ mt: { xs: 1, sm: 2 } }}
+        >
           <TextField
             fullWidth
             id="url"
-            label="Enter a long URL"
+            label={window.innerWidth < 600 ? "URL" : "Enter a long URL"} // Consolidated dynamic label
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             margin="normal"
@@ -136,11 +146,11 @@ const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
                   <LinkIcon />
                 </InputAdornment>
               ),
+              sx: { fontSize: { xs: "0.9rem", sm: "1rem" } }, // Responsive font size for input
             }}
-            sx={{ mb: 2 }}
+            sx={{ mb: { xs: 1.5, sm: 2 } }} // Responsive margin bottom
           />
-
-          <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
+          <FormControl fullWidth margin="normal" sx={{ mb: { xs: 2, sm: 3 } }}>
             <Select
               value={expiration}
               onChange={handleExpirationChange}
@@ -151,6 +161,7 @@ const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
                 </InputAdornment>
               }
               inputProps={{ "aria-label": "Expiration Time" }}
+              sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }} // Responsive font size for select
             >
               {TIME_OPTIONS.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -160,14 +171,27 @@ const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
             </Select>
             <FormHelperText>Set expiration time</FormHelperText>
           </FormControl>
-
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              mt: { xs: 1, sm: 2 },
+              flexDirection: { xs: "column-reverse", sm: "row" },
+            }}
+          >
             {" "}
             <Button
               variant="outlined"
               color="secondary"
               onClick={onClose}
-              sx={{ mr: 2, py: 1.25, px: 3 }}
+              sx={{
+                mr: { sm: 2 },
+                py: { xs: 1, sm: 1.25 }, // Responsive padding
+                px: { xs: 2, sm: 3 }, // Responsive padding
+                fontSize: { xs: "0.8rem", sm: "0.9rem" }, // Responsive font size
+                width: { xs: "100%", sm: "auto" }, // Full width on extra small
+                mt: { xs: 1, sm: 0 }, // Margin top on extra small
+              }}
             >
               Cancel
             </Button>
@@ -176,7 +200,12 @@ const URLForm: React.FC<URLFormProps> = ({ open, onClose }) => {
               variant="contained"
               color="primary"
               disabled={loading}
-              sx={{ py: 1.25, px: 3 }} // Adjusted padding
+              sx={{
+                py: { xs: 1, sm: 1.25 }, // Responsive padding
+                px: { xs: 2, sm: 3 }, // Responsive padding
+                fontSize: { xs: "0.8rem", sm: "0.9rem" }, // Responsive font size
+                width: { xs: "100%", sm: "auto" }, // Full width on extra small
+              }}
             >
               {loading ? <CircularProgress size={24} /> : "Shorten URL"}
             </Button>

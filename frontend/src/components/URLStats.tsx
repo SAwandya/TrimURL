@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import type { URL } from "../types";
 import { formatDistanceToNow } from "date-fns";
 
@@ -8,6 +8,9 @@ interface URLStatsProps {
 }
 
 const URLStats: React.FC<URLStatsProps> = ({ url }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   // Check if URL has expired
   const isExpired = new Date(url.expiresAt) < new Date();
 
@@ -17,32 +20,60 @@ const URLStats: React.FC<URLStatsProps> = ({ url }) => {
   });
 
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 1 }}>
-      <Box>
-        <Typography variant="caption" color="text.secondary">
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: { xs: 1, sm: 2 },
+        mt: { xs: 0.5, sm: 1 },
+        justifyContent: { xs: "flex-start", sm: "flex-start" }, // Align items to start
+      }}
+    >
+      <Box sx={{ textAlign: { xs: "left", sm: "left" } }}>
+        <Typography
+          variant={isMobile ? "overline" : "caption"}
+          color="text.secondary"
+          sx={{ fontSize: isMobile ? "0.65rem" : "0.75rem" }}
+        >
           Clicks
         </Typography>
-        <Typography variant="body2" fontWeight="bold">
+        <Typography
+          variant={isMobile ? "body2" : "body1"}
+          fontWeight="bold"
+          sx={{ fontSize: isMobile ? "0.8rem" : "1rem" }}
+        >
           {url.clicks}
         </Typography>
       </Box>
 
-      <Box>
-        <Typography variant="caption" color="text.secondary">
+      <Box sx={{ textAlign: { xs: "left", sm: "left" } }}>
+        <Typography
+          variant={isMobile ? "overline" : "caption"}
+          color="text.secondary"
+          sx={{ fontSize: isMobile ? "0.65rem" : "0.75rem" }}
+        >
           Created
         </Typography>
-        <Typography variant="body2">
+        <Typography
+          variant={isMobile ? "body2" : "body1"}
+          sx={{ fontSize: isMobile ? "0.8rem" : "0.9rem" }}
+        >
           {formatDistanceToNow(new Date(url.createdAt), { addSuffix: true })}
         </Typography>
       </Box>
 
-      <Box>
-        <Typography variant="caption" color="text.secondary">
+      <Box sx={{ textAlign: { xs: "left", sm: "left" } }}>
+        <Typography
+          variant={isMobile ? "overline" : "caption"}
+          color="text.secondary"
+          sx={{ fontSize: isMobile ? "0.65rem" : "0.75rem" }}
+        >
           Expires
         </Typography>
         <Typography
-          variant="body2"
+          variant={isMobile ? "body2" : "body1"}
           color={isExpired ? "error.main" : "text.primary"}
+          sx={{ fontSize: isMobile ? "0.8rem" : "0.9rem" }}
         >
           {isExpired ? "Expired" : expirationTime}
         </Typography>
