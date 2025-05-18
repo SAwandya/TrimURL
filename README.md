@@ -13,29 +13,25 @@ Follow these steps to get the project up and running on your local machine.
 
 2.  **Backend Setup**:
 
-        - Navigate to the `backend` directory:
-          ```bash
-          cd backend
-          ```
-        - Install the necessary Node.js packages:
-          ```bash
-          npm install
-          ```
-        - **Configure Environment Variables**:
-          Create a file named `.env` in the `backend` directory. Copy the example below and fill in your MySQL database details and preferred port:
-          ```env
-
-    PORT=3000
-    CORS_ORIGIN=http://localhost:5173
-    DB_HOST=localhost
-    DB_USER=root
-    DB_PASSWORD=root
-    DB_NAME=url_shortener
-    BASE_URL=http://localhost:3000
-
-    ```
-
-    ```
+    - Navigate to the `backend` directory:
+      ```bash
+      cd backend
+      ```
+    - Install the necessary Node.js packages:
+      ```bash
+      npm install
+      ```
+    - **Configure Environment Variables**:
+      Create a file named `.env` in the `backend` directory. Copy the example below and fill in your MySQL database details and preferred port:
+      ```env
+      DB_HOST=localhost
+      DB_USER=your_mysql_user
+      DB_PASSWORD=your_mysql_password
+      DB_NAME=url_shortener
+      PORT=3000
+      NODE_ENV=development
+      CORS_ORIGIN=http://localhost:5173
+      ```
 
 3.  **Frontend Setup**:
     - Navigate to the `frontend` directory:
