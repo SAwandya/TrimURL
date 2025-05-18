@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const urlRoutes = require("./routes/url.routes");
+const urlRoutes = require("./routes/urlRoutes");
 
 const app = express();
 
@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api", urlRoutes);
+app.use("/api/v1", urlRoutes);
 
 // // Redirect route for shortened URLs
 // app.get("/:code", require("./controllers/url.controller").redirectToUrl);
